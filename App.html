@@ -65,6 +65,17 @@
 
   }
 
+  var todos_storage = {
+    fetch: function(){
+      var todos = JSON.parse( localStorage.getItem('todos') || '[]');
+
+      return todos;
+    },
+    save: function(todos){
+      localStorage.setItem('todos', JSON.stringify(todos) );
+    }
+  }
+
   new Vue({
     'el': '.todoapp',
     data: {
@@ -72,10 +83,7 @@
       visibility: 'all',
       editingTodo: null,
       oldEditingTodoTitle: null,
-      todos: [
-        {title:'test 1', completed: true},
-        {title:'test 2', completed: false},
-      ]
+      todos: todos_storage.fetch()
     },
     computed:{
       filterdTodos: function(){
@@ -132,6 +140,14 @@
       cancelEditing(){
         this.editingTodo.title = this.oldEditingTodoTitle;
         this.editingTodo = null;
+      }
+    },
+    watch: {
+      todos: {
+        handler: function(todos){
+          todos_storage.save(todos);
+        },
+        deep: true
       }
     }
   });
