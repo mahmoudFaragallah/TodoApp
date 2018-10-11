@@ -2,7 +2,14 @@
 <link href="https://unpkg.com/todomvc-app-css@2.1.0/index.css" rel="stylesheet"/>
 
 <section class="todoapp">
-
+ <header class="header">
+    <h1>todos</h1>
+    <input class="new-todo"
+      autocomplete="off"
+      v-model="newTodo"
+      @keyup.enter="addTodo"
+      placeholder="What needs to be done?">
+  </header>
   <section class="main" >
     <ul class="todo-list">
       <li class="todo" v-for="todo in todos" :class="{completed:todo.completed}">
@@ -21,6 +28,7 @@
   new Vue({
     'el': '.todoapp',
     data: {
+      newTodo: '',
       todos: [
         {title:'test 1', completed: true},
         {title:'test 2', completed: false},
@@ -29,6 +37,16 @@
     methods:{
       deleteTodo: function(todo){
         this.todos.splice(this.todos.indexOf(todo), 1);
+      },
+      addTodo: function(){
+        if(this.newTodo == '')
+          return ;
+        
+        this.todos.push({
+          'title': this.newTodo,
+          'completed': false,
+        });
+        this.newTodo = '';
       }
     }
   });
