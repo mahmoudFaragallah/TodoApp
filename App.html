@@ -11,6 +11,9 @@
       placeholder="What needs to be done?">
   </header>
   <section class="main" >
+    <input class="toggle-all" id="toggle-all" type="checkbox" v-model="allDone">
+    <label for="toggle-all">Mark all as complete</label>
+
     <ul class="todo-list">
       <li class="todo" v-for="todo in filterdTodos" :class="{completed:todo.completed}">
         <div class="view">
@@ -79,6 +82,16 @@
           return 'items';
 
         return 'item';
+      },
+      allDone: {
+        get: function(){
+          return this.remaningTodos === 0;
+        },
+        set: function(value){
+          this.todos.forEach(function(todo){
+            todo.completed = value;
+          });
+        }
       }
     },
     methods:{
