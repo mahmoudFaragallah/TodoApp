@@ -15,12 +15,17 @@
     <label for="toggle-all">Mark all as complete</label>
 
     <ul class="todo-list">
-      <li class="todo" v-for="todo in filterdTodos" :class="{completed:todo.completed}">
+      <li class="todo" v-for="todo in filterdTodos" 
+        :class="{completed:todo.completed,editing:todo==editingTodo}">
         <div class="view">
           <input class="toggle" type="checkbox" v-model="todo.completed">
-          <label>{{todo.title}}</label>
+          <label @dblclick="editTodo(todo)">{{todo.title}}</label>
           <button class="destroy" @click="deleteTodo(todo)"></button>
         </div>
+        <input class="edit" type="text" v-model="todo.title" 
+          @keyup.enter="doneEditing()"
+          @keyup.esc="cancelEditing()"
+          >
       </li>
     </ul>
   </section>
@@ -65,6 +70,8 @@
     data: {
       newTodo: '',
       visibility: 'all',
+      editingTodo: null,
+      oldEditingTodoTitle: null,
       todos: [
         {title:'test 1', completed: true},
         {title:'test 2', completed: false},
@@ -110,6 +117,21 @@
       },
       removeCompleted(){
         this.todos = filters.active( this.todos );
+      },
+
+      editTodo(todo){
+        this.editingTodo = todo;
+        this.oldEditingTodoTitle = todo.title;
+      },
+      doneEditing(){
+        if(this.editingTodo.title == '')
+          this.deleteTodo(this.editingTodo);
+
+        this.editingTodo = null;
+      },
+      cancelEditing(){
+        this.editingTodo.title = this.oldEditingTodoTitle;
+        this.editingTodo = null;
       }
     }
   });
