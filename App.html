@@ -1,0 +1,35 @@
+<script type="text/javascript" src="https://unpkg.com/vue"></script>
+<link href="https://unpkg.com/todomvc-app-css@2.1.0/index.css" rel="stylesheet"/>
+
+<section class="todoapp">
+
+  <section class="main" >
+    <ul class="todo-list">
+      <li class="todo" v-for="todo in todos" :class="{completed:todo.completed}">
+        <div class="view">
+          <input class="toggle" type="checkbox" v-model="todo.completed">
+          <label>{{todo.title}}</label>
+          <button class="destroy" @click="deleteTodo(todo)"></button>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+</section>
+
+<script type="text/javascript">
+  new Vue({
+    'el': '.todoapp',
+    data: {
+      todos: [
+        {title:'test 1', completed: true},
+        {title:'test 2', completed: false},
+      ]
+    },
+    methods:{
+      deleteTodo: function(todo){
+        this.todos.splice(this.todos.indexOf(todo), 1);
+      }
+    }
+  });
+</script>
