@@ -12,7 +12,7 @@
   </header>
   <section class="main" >
     <ul class="todo-list">
-      <li class="todo" v-for="todo in todos" :class="{completed:todo.completed}">
+      <li class="todo" v-for="todo in filterdTodos" :class="{completed:todo.completed}">
         <div class="view">
           <input class="toggle" type="checkbox" v-model="todo.completed">
           <label>{{todo.title}}</label>
@@ -21,18 +21,65 @@
       </li>
     </ul>
   </section>
-
+  <footer class="footer">
+    <span class="todo-count">
+      <strong>{{remaningTodos}}</strong> {{remaningText}} left
+    </span>
+    <ul class="filters">
+      <li><a href="#" @click.prevent="visibility='all' " 
+        :class="{selected:visibility=='all'}">All</a></li>
+      <li><a href="#" @click.prevent="visibility='active' "
+        :class="{selected:visibility=='active'}">Active</a></li>
+      <li><a href="#" @click.prevent="visibility='completed' "
+        :class="{selected:visibility=='completed'}">Completed</a></li>
+    </ul>
+    <button class="clear-completed" @click="removeCompleted">
+      Clear completed
+    </button>
+  </footer>
 </section>
 
 <script type="text/javascript">
+  var filters = {
+    'all': function(todos){
+      return todos;
+    },
+    active: function(todos){
+      return todos.filter(function(todo){
+        return ! todo.completed;
+      });
+    },
+    completed: function(todos){
+      return todos.filter(function(todo){
+        return todo.completed;
+      });
+    }
+
+  }
+
   new Vue({
     'el': '.todoapp',
     data: {
       newTodo: '',
+      visibility: 'all',
       todos: [
         {title:'test 1', completed: true},
         {title:'test 2', completed: false},
       ]
+    },
+    computed:{
+      filterdTodos: function(){
+        return filters[ this.visibility ] (this.todos);
+      },
+      remaningTodos: function(){
+        return filters.active( this.todos ).length;
+      },
+      remaningText: function(){
+        if( filters.active( this.todos ).length > 1)
+          return 'items';
+
+        return 'item';
+      }
     },
     methods:{
       deleteTodo: function(todo){
@@ -47,6 +94,9 @@
           'completed': false,
         });
         this.newTodo = '';
+      },
+      removeCompleted(){
+        this.todos = filters.active( this.todos );
       }
     }
   });
